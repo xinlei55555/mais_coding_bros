@@ -1,0 +1,22 @@
+body {
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    /* This creates a gradient as the background color */
+    /* The angle is 135, so it goes from bottom right to top left */
+    background: linear-gradient(100deg, #ffffff, #fce8f9);
+}
+
+.list-behavior{
+    font-family: 'Kepler bold semicondensed';
+    border-bottom: 2px solid #ebebeb45;
+    margin: 5px;
+    font-size: 18px;
+}
+
+/* Here, i wanted to underline the text when it hovers over */
+.list-behavior:hover{
+    border-bottom: 2px solid #173ac5;
+    transition-duration: 0.8s;
+}
