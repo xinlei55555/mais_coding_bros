@@ -1,38 +1,33 @@
-from flask import Flask, render_template, send_from_directory, url_for
-from flask_uploads import UploadSet, IMAGES, configure_uploads
-from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileRequired, FileAllowed
-from wtforms import SubmitField
+from PIL import Image
+from flask import Flask, render_template, request, redirect, url_for
+import base64
+import io
+import os
+import time
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'randomkey'
-app.config['UPLOADED_PHOTOS_DEST'] = 'uploads'
+app = Flask(__name__, static_folder='F:\Hackathon\mais_coding_bros\web_dev\static')
+dirname = os.path.dirname(__file__)
+filename = os.path.join(dirname, 'static')
+app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.jpeg']
+app.config['UPLOAD_PATH'] = filename
 
-photos = UploadSet('photos', IMAGES)
-configure_uploads(app, photos)
+@app.route('/')
+def home():
+    return render_template('index.html')
 
-class UploadForm(FlaskForm):
-    photo = FileField(
-        validators = [
-            FileAllowed(photos, 'Only images are allowed'),
-            FileRequired('File field should not be empty')
-        ]
-    )
-    submit = SubmitField('Upload')
+@app.route('/myform.cgi', methods=['POST'])
+def count():
+    print('done')
+    uploaded_file = request.files['fileupload']
+    print(uploaded_file)
+    #absolute_path = os.path.abspath(app.config['UPLOAD_PATH']+'image.png')
 
-@app.route('/uploads/<filename>')
-def get_file(filename):
-    return send_from_directory(app.config['UPLOADED_PHOTOS_DEST'], filename)
+    new_name = "image" + str(time.time()) + ".png"
+    uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], new_name))
+    print('saved file')
 
-@app.route('/', methods=['GET', 'POST'])
-def upload_image():
-    form = UploadForm()
-    if form.validate_on_submit():
-        filename = photos.save(form.photo.data)
-        file_url = url_for('get_file', filename=filename)
-    else:
-        file_url = None
-    return render_template('testing.html', form=form, file_url=file_url)
+
+    return render_template('result.html', result='Healthy', image_name = new_name)
 
 if __name__ == '__main__':
     app.run(debug=True)
