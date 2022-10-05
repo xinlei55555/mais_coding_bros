@@ -4,6 +4,7 @@ import base64
 import io
 import os
 import time
+import numpy as np
 
 app = Flask(__name__, static_folder='F:\Hackathon\mais_coding_bros\web_dev\static')
 dirname = os.path.dirname(__file__)
@@ -26,8 +27,10 @@ def count():
     uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], new_name))
     print('saved file')
 
-
-    return render_template('result.html', result='Healthy', image_name = new_name)
+    list = ['Blight', 'Leaf Spot', 'Rust', 'Mildew', 'Unknown']
+    number = np.random.randint(0,4)
+    
+    return render_template('result.html', result=list[number], image_name = new_name)
 
 if __name__ == '__main__':
     app.run(debug=True)
